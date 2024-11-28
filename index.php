@@ -53,9 +53,15 @@ if ($uri == '/') {
                     break;
                 }
         }
-        print_r($random_teams);
-    }
-//    else{
+
+        $i = 1;
+        foreach ($random_teams as $team)
+        {
+            echo '<h1 align="center">' . $i . '-team| ' . $team . '</h1>';
+            $i++;
+        }
+    } else {
+        echo "gg";
 //        if ($count % 3 == 1){
 //
 //            while (true) {
@@ -95,8 +101,6 @@ if ($uri == '/') {
 //
 //            print_r($random_teams);
 //        }
-//    }
-
-
-
+    }
+    echo '<h1 align="center"><a href="/" class="btn btn-primary">Back to main</a></h1>';
 }
