@@ -2,7 +2,7 @@
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-require 'Random_Team.php';
+require 'src/Random_Team.php';
 require 'helpers.php';
 
 $r_team = new Random_Team();
