@@ -13,31 +13,44 @@
         <form action="/store" method="POST">
             <div class="mb-3">
                 <label for="f_n" class="form-label">Enter your full name (First name, second name)</label>
-                <input type="text" class="form-control" name="f_n" id="f_n" placeholder="Full name">
+                <input type="text" class="form-control" name="f_n" id="f_n" placeholder="Full name" required>
             </div>
-            <button type="submit" name="sub" class="btn btn-primary">Submit</button>
+            <button type="submit" name="sub" class="btn btn-primary">Add</button>
         </form>
     </div>
     <div class="row mt-3">
-        <a href="/create_teams" class="btn btn-primary">Create teams</a>
+        <form action="/create" method="POST">
+            <div class="mb-3">
+                <label for="count" class="form-label">Enter how many members should be in each team</label>
+                <input type="number" class="form-control" name="count" id="count" placeholder="Enter how many members should be in each team" required>
+            </div>
+            <button type="submit" name="sub_team" class="btn btn-primary">Create teams</button>
+        </form>
     </div>
     <div class="row mt-3">
         <table class="table">
             <thead>
             <tr>
                 <th scope="col">Full name</th>
+                <th scope="col">Actions</th>
             </tr>
             </thead>
             <tbody>
             <?php
             global $teams;
 
+            $i = 1;
             foreach ($teams as $team) {
                 ?>
                 <tr>
-                    <td><?= $team['full_name']?></td>
+                    <td><?= $i . ' ' . htmlspecialchars($team['full_name']) ?></td>
+                    <td>
+                        <a href="/delete?id=<?= htmlspecialchars($team['id']) ?>" class="btn btn-primary">Delete</a>
+                    </td>
                 </tr>
-            <?php }
+                <?php
+                $i++;
+            }
             ?>
             </tbody>
         </table>

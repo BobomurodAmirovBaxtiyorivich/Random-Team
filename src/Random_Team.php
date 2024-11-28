@@ -29,4 +29,12 @@ class Random_Team
         $this->stmt = $this->conn->query($this->query);
         return $this->stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function Delete($id): bool
+    {
+        $this->query = "DELETE FROM random_team WHERE id = :id";
+        return $this->conn->prepare($this->query)->execute([
+            ':id' => $id
+        ]);
+    }
 }

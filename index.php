@@ -17,90 +17,83 @@ if ($uri == '/') {
 
         header('Location: /');
     }
-} elseif ($uri == '/create_teams') {
-    $teams = $r_team->get();
+} elseif ($uri == '/create') {
 
-    $count = count($teams);
+    if (isset($_POST['sub_team'])) {
+        $teams = $r_team->get();
 
-    $random_teams = [];
+        $count = count($teams) % $_POST['count'];
 
-    $all_teams = [];
+        $random_teams = [];
 
-    foreach ($teams as $team) {
-        $all_teams[] = $team['full_name'];
-    }
+        $all_teams = [];
 
-    if ($count % 3 == 0)
-    {
+        foreach ($teams as $team) {
+            $all_teams[] = $team['full_name'];
+        }
+
+        $random_members = [];
+
         while (true) {
-                $first_member = array_rand($all_teams);
+            for ($i = 0; $i < $_POST['count']; $i++) {
+                $random_member = array_rand($all_teams);
+                if (!in_array($all_teams[$random_member], $random_teams)) {
+                    $random_members[$i] = $all_teams[$random_member];
+                    unset($all_teams[$random_member]);
+                }
+            }
 
-                $second_member = array_rand($all_teams);
+            $random_teams[] = $random_members;
 
-                $third_member = array_rand($all_teams);
+            if (count($all_teams) == $count) {
+                break;
+            }
 
-                if ($first_member != $second_member and $first_member != $third_member and $second_member != $third_member)
-                {
-                    $random_teams[] = $all_teams[$first_member] . ', ' . $all_teams[$second_member] . ', ' . $all_teams[$third_member];
+        }
 
-                    unset($all_teams[$first_member]);
-                    unset($all_teams[$second_member]);
-                    unset($all_teams[$third_member]);
+        $all_teams = array_values($all_teams);
+
+        $random_members = [];
+
+        if (count($all_teams) > 0) {
+            while (true) {
+                for ($i = 0; $i <= count($all_teams); $i++) {
+                    $random_member = array_rand($all_teams);
+                    if (!in_array($all_teams[$random_member], $random_teams)) {
+                        $random_members[$i] = $all_teams[$random_member];
+                        unset($all_teams[$random_member]);
+                    }
                 }
 
-                if (count($all_teams) == 0)
-                {
+                for ($i = 0; $i <= count($random_members); $i++) {
+                    $random_m = array_rand($random_members);
+                    $random_team = array_rand($random_teams);
+
+                    if (!in_array($random_members[$random_m], $random_teams[$random_team]) and count($random_teams[$random_team]) <= $_POST['count'] + 1) {
+                        $random_teams[$random_team][] = $random_members[$random_m];
+                        unset($random_members[$random_m]);
+                    }
+                }
+
+                if (count($all_teams) == 0) {
                     break;
                 }
+
+            }
         }
 
         $i = 1;
-        foreach ($random_teams as $team)
-        {
-            echo '<h1 align="center">' . $i . '-team| ' . $team . '</h1>';
+        foreach ($random_teams as $team) {
+            echo '<h1 align="center">' . $i . '-team| ' . implode(', ', $team) . '</h1>';
             $i++;
         }
-    } else {
-        echo "gg";
-//        if ($count % 3 == 1){
-//
-//            while (true) {
-//                    $first_member = array_rand($all_teams);
-//
-//                    $second_member = array_rand($all_teams);
-//
-//                    $third_member = array_rand($all_teams);
-//
-//                    if ($first_member != $second_member and $first_member != $third_member and $second_member != $third_member)
-//                    {
-//                        $random_teams[] = $all_teams[$first_member] . ', ' . $all_teams[$second_member] . ', ' . $all_teams[$third_member];
-//
-//                        unset($all_teams[$first_member]);
-//                        unset($all_teams[$second_member]);
-//                        unset($all_teams[$third_member]);
-//                    }
-//
-//                    if (empty($first_member) and empty($second_member))
-//                    {
-//                        $random_team = array_rand($random_teams);
-//                        $random_teams[$random_team] = $random_teams[$random_team] . ', ' . $all_teams[$third_member];
-//                        break;
-//                    } elseif (empty($first_member) and empty($third_member))
-//                    {
-//                        $random_team = array_rand($random_teams);
-//                        $random_teams[$random_team] = $random_teams[$random_team] . ', ' . $all_teams[$second_member];
-//                        break;
-//                    } elseif (empty($third_member) and empty($second_member))
-//                    {
-//                        $random_team = array_rand($random_teams);
-//                        $random_teams[$random_team] = $random_teams[$random_team] . ', ' . $all_teams[$first_member];
-//                        break;
-//                    }
-//
-//                }
-//
-//            print_r($random_teams);
-//        }
+
+        echo '<h1 align="center"><a href="/" class="btn btn-primary">Back to main</a></h1>';
     }
-    echo '<h1 align="center"><a href="/" class="btn btn-primary">Back to main</a></h1>';
+
+} elseif ($uri == '/delete') {
+    if (isset($_GET['id'])) {
+        $r_team->delete($_GET['id']);
+        header('Location: /');
+    }
 }
